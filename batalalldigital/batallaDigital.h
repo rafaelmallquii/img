@@ -4,22 +4,34 @@
 
 #include "tablero.h"
 
+// const char ARRIBA = 'w';
+// const char DIAGONALARRIBADERECHA = 'e';
+// const char DIAGONALARRIBAIZQUIERDA = 'q';
+
+// const char ABAJO = 's';
+// const char DIAGONALBAJOIZQUIERDA = 'a';
+// const char DIAGONALABAJODERECHA = 'd';
+
 const char ARRIBA = 'w';
 const char DIAGONALARRIBADERECHA = 'e';
 const char DIAGONALARRIBAIZQUIERDA = 'q';
 
-const char ABAJO = 's';
-const char DIAGONALBAJOIZQUIERDA = 'a';
-const char DIAGONALABAJODERECHA = 'd';
+const char DERECHA = 'd';
+const char IZQUIERDA = 'a';
 
+const char ABAJO = 's';
+const char DIAGONALABAJOIZQUIERDA = 'z';
+const char DIAGONALABAJODERECHA = 'c';
 
 
 void jugar(Casillero **tablero);
 
 // bool mover(Casillero **tablero, int filaOrigen, int colOrigen, int filaDestino, int colDestino);
-void moverFicha(Casillero **tablero);
+void moverFicha(Casillero **tablero , int i, int j);
 
 void imprimeCoordenadasjugadores(Casillero **tablero, int turno);
+
+void seleccionDeSoldado(Casillero **tablero,char ficha);
 
 // bool esValidoMover(Casillero **tablero, int filaOrigen, int colOrigen, int filaDestino, int colDestino);
 

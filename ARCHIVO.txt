@@ -1,0 +1,65 @@
+
+void jugar(Casillero **tablero) {
+    bool termino = false;
+    int turno = 1,numeroJugada=0;
+    char ficha1 = '1';
+    char ficha2 = '2';
+    char ficha = ' ';
+    while (!termino) {
+
+        mostrarTablero(tablero);
+        if(numeroJugada == 0){
+            ficha = ficha1;
+        }
+        // moverFicha
+        imprimeCoordenadasjugadores(tablero, turno);
+        seleccionDeSoldado(tablero,ficha);
+        if(turno == 1){
+                turno = 2;
+            ficha = ficha2;          
+        } 
+            else{
+                turno = 1;
+                ficha = ficha1;
+            }
+        system("pause");
+        // tablero[filaDestino][colDestino].ficha = tablero[filaOrigen][colOrigen].ficha;
+        // tablero[filaOrigen][colOrigen].ficha = BLANCO;
+        numeroJugada++;
+    }
+}
+
+void imprimeCoordenadasjugadores(Casillero **tablero, int turno){
+
+    if (turno == 1){
+        std::cout << "Jugador 1" << std::endl;
+    }
+    else{
+        std::cout << "Jugador 2" << std::endl;
+    }
+    for (int i = 0; i < ALTODELTABLERO; i++) {
+        for (int j = 0; j < ANCHODELTABLERO; j++){
+            if (tablero[i][j].ficha == turno){
+                std::cout << i + 1 <<')' << "Ficha: " << tablero[i][j].ficha << " Coordenadas: " << i << " " << j << std::endl;
+            }
+        }
+    }
+
+}
+
+void seleccionDeSoldado( Casillero **tablero,char ficha){
+    int soldado;
+    int contadorJugadores = 0;
+    std::cout << "Ingrese el numero del soldado que desea mover: ";
+    std::cin >> soldado;
+
+    for(int i = 0; i < ALTODELTABLERO; i++){
+        for(int j = 0; j < ANCHODELTABLERO; j++){
+            if(char(tablero[i][j].ficha) == ficha){
+                contadorJugadores++;
+                if(contadorJugadores == soldado){
+                    moverFicha(tablero, i, j);
+                }
+            }
+        }
+    }

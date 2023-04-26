@@ -7,10 +7,49 @@ void jugar(Casillero **tablero) {
     bool termino = false;
     int turno = 1,numeroJugada=0;
 
+    std::string nombreJugador1, nombreJugador2;
+
+    std::cout << "Ingrese el nombre del jugador 1: ";
+    std::cin >> nombreJugador1;
+    std::cout << "Ingrese el nombre del jugador 2: ";
+    std::cin >> nombreJugador2;
+
+    Casillero casillero;
+
+    Jugador jugador1;
+    jugador1.nombre = nombreJugador1;
+    for(int i = 0;i< 4;i++){
+        Ficha ficha;
+        ficha.representacion = JUGADOR1;
+        ficha.cantidadDeMovimientos = 0;
+        int fil = rand() % 20;
+        int col = rand() % 20;
+        ficha.fila = fil;
+        ficha.columna = col;
+        jugador1.fichas[i] = ficha;
+    }
+
+    Jugador jugador2;
+    jugador2.nombre = nombreJugador2;
+    for (int i = 0; i < 4; i++)
+    {
+        Ficha ficha;
+        ficha.representacion = JUGADOR2;
+        ficha.cantidadDeMovimientos = 0;
+        int fil = rand() % 20;
+        int col = rand() % 20;
+        ficha.fila = fil;
+        ficha.columna = col;
+        jugador2.fichas[i] = ficha;
+    }
+
+    casillero.jugador1 = jugador1;
+    casillero.jugador2 = jugador2;
+
     while (!termino) {
 
-        mostrarTablero(tablero);
-        
+        mostrarTablero(casillero);
+
         // moverFicha
         imprimeCoordenadasjugadores(tablero, turno);
         if(turno == 1){
@@ -34,34 +73,34 @@ void imprimeCoordenadasjugadores(Casillero **tablero, int turno){
     else{
         std::cout << "Jugador 2" << std::endl;
     }
-    for (int i = 0; i < ALTODELTABLERO; i++) {
-        for (int j = 0; j < ANCHODELTABLERO; j++){
-            if (tablero[i][j].ficha == turno){
-                std::cout << i + 1 <<')' << "Ficha: " << tablero[i][j].ficha << " Coordenadas: " << i << " " << j << std::endl;
-            }
-        }
-    }
+    // for (int i = 0; i < ALTODELTABLERO; i++) {
+    //     for (int j = 0; j < ANCHODELTABLERO; j++){
+    //         if (tablero[i][j].ficha == turno){
+    //             std::cout << i + 1 <<')' << "Ficha: " << tablero[i][j].ficha << " Coordenadas: " << i << " " << j << std::endl;
+    //         }
+    //     }
+    // }
 
 }
-void moverNumeroDeJugador(Casillero **tablero ){
-    int numeroDeJugador;
-    std::cout << "Ingrese el numero de jugador que desea mover: " << std::endl;
-    std::cin >> numeroDeJugador;
-    int filaOrigen = soldados[numeroDeJugador].x;
-    int colOrigen = soldados[numeroDeJugador].y;
-    int filaDestino;
-    int colDestino;
-    std::cout << "Ingrese la fila a la que desea mover el soldado: " << std::endl;
-    std::cin >> filaDestino;
-    std::cout << "Ingrese la columna a la que desea mover el soldado: " << std::endl;
-    std::cin >> colDestino;
-    if (esValidoMover(tablero, filaOrigen, colOrigen, filaDestino, colDestino)){
-        mover(tablero, filaOrigen, colOrigen, filaDestino, colDestino);
-    }
-    else{
-        std::cout << "Movimiento invalido" << std::endl;
-    }
-}
+// void moverNumeroDeJugador(Casillero **tablero ){
+//     int numeroDeJugador;
+//     std::cout << "Ingrese el numero de jugador que desea mover: " << std::endl;
+//     std::cin >> numeroDeJugador;
+//     int filaOrigen = soldados[numeroDeJugador].x;
+//     int colOrigen = soldados[numeroDeJugador].y;
+//     int filaDestino;
+//     int colDestino;
+//     std::cout << "Ingrese la fila a la que desea mover el soldado: " << std::endl;
+//     std::cin >> filaDestino;
+//     std::cout << "Ingrese la columna a la que desea mover el soldado: " << std::endl;
+//     std::cin >> colDestino;
+//     if (esValidoMover(tablero, filaOrigen, colOrigen, filaDestino, colDestino)){
+//         mover(tablero, filaOrigen, colOrigen, filaDestino, colDestino);
+//     }
+//     else{
+//         std::cout << "Movimiento invalido" << std::endl;
+//     }
+// }
 
 
 

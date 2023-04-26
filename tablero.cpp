@@ -6,7 +6,7 @@ void crearTablero(Casillero **&tablero) {
     for (int i = 0; i < ANCHODELTABLERO; i++) {
         tablero[i] = new Casillero[ALTODELTABLERO];
         for (int j = 0; j < ALTODELTABLERO; j++) {
-            tablero[i][j].ficha = BLANCO;
+            // tablero[i][j].ficha = BLANCO;
             tablero[i][j].activo = false;
             tablero[i][j].cantidadDeTurnosActivo = 0;
         }
@@ -16,23 +16,30 @@ void crearTablero(Casillero **&tablero) {
 void cargarTablero(Casillero **tablero) {
     // Colocar fichas de jugador 1
     for (int i = 0; i < 4; i++) {
-        tablero[i][0].ficha = JUGADOR1;
+        // tablero[i][0].ficha = JUGADOR1;
     }
     // Colocar fichas de jugador 2
     for (int i = 0; i < 4; i++) {
-        tablero[i][ALTODELTABLERO - 1].ficha = JUGADOR2;
+        // tablero[i][ALTODELTABLERO - 1].ficha = JUGADOR2;
     }
 }
 
-void mostrarTablero(Casillero **tablero) {
+void mostrarTablero(Casillero casillero) {
     // std::cout<<"   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19"<< std::endl;
     // std::cout<<"   ----------------------------------------------------------"<< std::endl;
     for (int i = 0; i < ANCHODELTABLERO; i++) {
         for (int j = 0; j < ALTODELTABLERO; j++) {
-            if (tablero[i][j].activo) {
-                std::cout << " X ";
-            } else {
-                switch (tablero[i][j].ficha) {
+            
+            for (int k = 0; k < 4; k++)
+            {
+                FichaR repr = casillero.jugador1.fichas[k].representacion;
+                int fila = casillero.jugador1.fichas[k].fila;
+                int columna = casillero.jugador1.fichas[k].columna;
+
+                if(i == fila && j == columna)
+                {
+                    switch (repr)
+                    {
                     case BLANCO:
                         std::cout << " . ";
                         break;
@@ -48,14 +55,15 @@ void mostrarTablero(Casillero **tablero) {
                     case INACTIVA:
                         std::cout << " X ";
                         break;
+                    }
                 }
+
             }
         }
         std::cout << std::endl;
     }
-    // std::cout<<"   ----------------------------------------------------------";
 }
-
+    // std::cout<<"   ----------------------------------------------------------";
 
     // for(int i = 0; i < FIL; i++){
     //     for(int j = 0; j < COL; j++){
