@@ -1,0 +1,368 @@
+#include "batalladigital.h"
+#include "tablero.h"
+#include <iostream>
+
+void jugar(Casillero **tablero, int &turno)
+{
+    std::cout << "Bienvenido a Batalla Digital" << std::endl;
+    std::cout << "Jugador 1: fichas '1'" << std::endl;
+    std::cout << "Jugador 2: fichas '2'" << std::endl;
+    std::cout << "Para salir del juego ingrese '-1' en la fila de origen." << std::endl;
+    std::cout << std::endl;
+
+    int filaOrigen, colOrigen, filaDestino, colDestino;
+    bool movido;
+    while (true)
+    {
+        mostrarTablero(tablero);
+        std::cout << "Turno del jugador " << turno << std::endl;
+        std::cout << "Ingrese la fila de origen: ";
+        std::cin >> filaOrigen;
+        if (filaOrigen == -1)
+        {
+            std::cout << "Ha salido del juego." << std::endl;
+            break;
+        }
+        std::cout << "Ingrese la columna de origen: ";
+        std::cin >> colOrigen;
+        std::cout << "Ingrese la fila de destino: ";
+        std::cin >> filaDestino;
+        std::cout << "Ingrese la columna de destino: ";
+        std::cin >> colDestino;
+
+        if (esValidoMover(tablero, filaOrigen, colOrigen, filaDestino, colDestino))
+        {
+            movido = mover(tablero, filaOrigen, colOrigen, filaDestino, colDestino);
+            if (!movido)
+            {
+                std::cout << "No se pudo mover la ficha." << std::endl;
+            }
+            else
+            {
+                turno = (turno == 1) ? 2 : 1; // Cambiar turno
+            }
+        }
+        else
+        {
+            std::cout << "Movimiento inválido." << std::endl;
+        }
+    }
+}
+
+bool mover(Casillero **tablero, int filaOrigen, int colOrigen, int filaDestino, int colDestino)
+{
+    if (tablero[filaOrigen][colOrigen].activo)
+    {
+        std::cout << "La ficha está inactiva." << std::endl;
+        return false;
+    }
+
+    if (tablero[filaDestino][colDestino].ficha != BLANCO)
+    {
+        std::cout << "El destino ya está ocupado." << std::endl;
+        return false;
+    }
+
+    tablero[filaDestino][colDestino].ficha = tablero[filaOrigen][colOrigen].ficha;
+    tablero[filaDestino][colDestino].activo = false;
+    tablero[filaOrigen][colOrigen].ficha = BLANCO;
+
+    return true;
+}
+
+bool esValidoMover(Casillero **tablero, int filaOrigen, int colOrigen, int filaDestino, int colDestino)
+{
+    if (filaOrigen < 0 || filaOrigen >= ANCHODELTABLERO || colOrigen < 0 || colOrigen >= ALTODELTABLERO ||
+        filaDestino < 0 || filaDestino >= ANCHODELTABLERO || colDestino < 0 || colDestino >= ALTODELTABLERO)
+    {
+        return false;
+    }
+
+    if (tablero[filaOrigen][colOrigen].ficha == BLANCO)
+    {
+        return false;
+    }
+
+    if (tablero[filaOrigen][colOrigen].ficha == MINA && !tablero[filaDestino][colDestino].activo)
+    {
+        return false;
+    }
+    {
+        std::cout << "No se puede mover la bomba." << std::endl;
+        return false;
+    }
+
+    if (tablero[filaOrigen][colOrigen].activo)
+    {
+        std::cout << "La ficha está inactiva." << std::endl;
+        return false;
+    }
+
+    if (tablero[filaOrigen][colOrigen].ficha == ESPIONAJE && tablero[filaDestino][colDestino].ficha == MARISCAL)
+    {
+        std::cout << "El espía no puede capturar al mariscal." << std::endl;
+        return false;
+    }
+
+    if (tablero[filaOrigen][colOrigen].ficha == MINA && !tablero[filaDestino][colDestino].activo)
+    {
+        std::cout << "No se puede mover la mina." << std::endl;
+        return false;
+    }
+
+    if (filaOrigen == filaDestino)
+    {
+        int inicio, fin;
+        if (colOrigen < colDestino)
+        {
+            inicio = colOrigen;
+            fin = colDestino;
+        }
+        else
+        {
+            inicio = colDestino;
+            fin = colOrigen;
+        }
+
+        for (int i = inicio + 1; i < fin; i++)
+        {
+            if (tablero[filaOrigen][i].ficha != BLANCO)
+            {
+                std::cout << "Hay una ficha en el camino." << std::endl;
+                return false;
+            }
+        }
+    }
+    else if (colOrigen == colDestino)
+    {
+        int inicio, fin;
+        if (filaOrigen < filaDestino)
+        {
+            inicio = filaOrigen;
+            fin = filaDestino;
+        }
+        else
+        {
+            inicio = filaDestino;
+            fin = filaOrigen;
+        }
+
+        for (int i = inicio + 1; i < fin; i++)
+        {
+            if (tablero[i][colOrigen].ficha != BLANCO)
+            {
+                std::cout << "Hay una ficha en el camino." << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void guardarPartida(Casillero **tablero, int turno, std::string nombreArchivo)
+{
+    std::ofstream archivo;
+    archivo.open(nombreArchivo);
+    archivo << turno << std::endl;
+    for (int i = 0; i < ALTODELTABLERO; i++)
+    {
+        for (int j = 0; j < ANCHODELTABLERO; j++)
+        {
+            archivo << tablero[i][j].ficha << " " << tablero[i][j].activo << std::endl;
+        }
+    }
+    archivo.close();
+    std::cout << "La partida se ha guardado exitosamente." << std::endl;
+}
+
+void cargarPartida(Casillero **&tablero, int &turno, std::string nombreArchivo)
+{
+    std::ifstream archivo;
+    archivo.open(nombreArchivo);
+    if (!archivo)
+    {
+        std::cout << "El archivo no existe." << std::endl;
+        return;
+    }
+    std::string ficha;
+    bool activo;
+    archivo >> turno;
+    for (int i = 0; i < ALTODELTABLERO; i++)
+    {
+        for (int j = 0; j < ANCHODELTABLERO; j++)
+        {
+            archivo >> ficha >> activo;
+        }
+
+        void guardarPartida(Casillero * *tablero, int turno, std::string nombreArchivo)
+        {
+            std::ofstream archivo(nombreArchivo);
+            if (archivo.is_open())
+            {
+                archivo << turno << std::endl;
+
+                for (int fila = 0; fila < ANCHODELTABLERO; fila++)
+                {
+                    for (int col = 0; col < ALTODELTABLERO; col++)
+                    {
+                        archivo << tablero[fila][col].ficha << " " << tablero[fila][col].activo << std::endl;
+                    }
+                }
+
+                archivo.close();
+                std::cout << "La partida se guardó exitosamente en " << nombreArchivo << std::endl;
+            }
+            else
+            {
+                std::cout << "No se pudo guardar la partida en " << nombreArchivo << std::endl;
+            }
+        }
+
+        void cargarPartida(Casillero * *&tablero, int &turno, std::string nombreArchivo)
+        {
+            std::ifstream archivo(nombreArchivo);
+            if (archivo.is_open())
+            {
+                archivo >> turno;
+
+                for (int fila = 0; fila < ANCHODELTABLERO; fila++)
+                {
+                    for (int col = 0; col < ALTODELTABLERO; col++)
+                    {
+                        int ficha;
+                        bool activo;
+                        archivo >> ficha >> activo;
+                        tablero[fila][col].ficha = static_cast<Ficha>(ficha);
+                        tablero[fila][col].activo = activo;
+                    }
+                }
+
+                archivo.close();
+                std::cout << "La partida se cargó exitosamente desde " << nombreArchivo << std::endl;
+            }
+            else
+            {
+                std::cout << "No se pudo cargar la partida desde " << nombreArchivo << std::endl;
+            }
+        }
+        return true;
+    }
+
+    void guardarPartida(Casillero * *tablero, int turno, std::string nombreArchivo)
+    {
+        std::ofstream archivo(nombreArchivo);
+        if (!archivo)
+        {
+            std::cout << "No se pudo abrir el archivo." << std::endl;
+            return;
+        }
+        archivo << turno << std::endl;
+        for (int i = 0; i < ANCHODELTABLERO; i++)
+        {
+            for (int j = 0; j < ALTODELTABLERO; j++)
+            {
+                archivo << tablero[i][j].ficha << " " << tablero[i][j].activo << std::endl;
+            }
+        }
+
+        archivo.close();
+        archivo >> turno;
+        for (int i = 0; i < ANCHODELTABLERO; i++)
+        {
+            for (int j = 0; j < ALTODELTABLERO; j++)
+            {
+                archivo >> tablero[i][j].ficha >> tablero[i][j].activo;
+            }
+        }
+
+        archivo.close();
+    }
+
+    int main()
+    {
+        Casillero **tablero = crearTablero();
+        int turno = 1;
+        bool continuar = true;
+        while (continuar)
+        {
+            std::cout << "¿Desea cargar una partida existente? (s/n): ";
+            char opcion;
+            std::cin >> opcion;
+            if (opcion == 's')
+            {
+                std::string nombreArchivo;
+                std::cout << "Ingrese el nombre del archivo: ";
+                std::cin >> nombreArchivo;
+                cargarPartida(tablero, turno, nombreArchivo);
+                continuar = false;
+            }
+            else if (opcion == 'n')
+            {
+                iniciarTablero(tablero);
+                guardarPartida(tablero, turno, "partida_guardada.txt");
+                continuar = false;
+            }
+            else
+            {
+                std::cout << "Opción inválida." << std::endl;
+            }
+        }
+        jugar(tablero, turno);
+
+        return 0;
+    }
+}
+
+void guardarPartida(Casillero **tablero, int turno, std::string nombreArchivo)
+{
+    std::ofstream archivo(nombreArchivo);
+    if (archivo.is_open())
+    {
+        archivo << turno << std::endl;
+        for (int fila = 0; fila < ALTODELTABLERO; fila++)
+        {
+            for (int col = 0; col < ANCHODELTABLERO; col++)
+            {
+                archivo << tablero[fila][col].ficha << " ";
+                archivo << tablero[fila][col].activo << std::endl;
+            }
+        }
+        std::cout << "Partida guardada exitosamente en " << nombreArchivo << std::endl;
+        archivo.close();
+    }
+    else
+    {
+        std::cout << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+}
+
+void cargarPartida(Casillero **&tablero, int &turno, std::string nombreArchivo)
+{
+    std::ifstream archivo(nombreArchivo);
+    if (archivo.is_open())
+    {
+        archivo >> turno;
+        for (int fila = 0; fila < ALTODELTABLERO; fila++)
+        {
+            for (int col = 0; col < ANCHODELTABLERO; col++)
+            {
+                int ficha;
+                bool activo;
+                archivo >> ficha >> activo;
+                tablero[fila][col].ficha = static_cast<Ficha>(ficha);
+                tablero[fila][col].activo = activo;
+            }
+        }
+        std::cout << "Partida cargada exitosamente desde " << nombreArchivo << std::endl;
+        archivo.close();
+    }
+    else
+    {
+        std::cout << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+}
