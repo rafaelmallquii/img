@@ -42,7 +42,7 @@ struct Casillero {
 
 void crearTablero(Casillero **&tablero);
 void cargarTablero(Casillero **tablero);
-void mostrarTablero(Casillero tablero);
+void mostrarTablero(Casillero **tablero);
 void eliminarTablero(Casillero **tablero);
 
 #endif // TABLERO_H

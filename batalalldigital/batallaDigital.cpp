@@ -3,39 +3,36 @@
 #include <string>
 #include <iostream>
 
-
-
 void jugar(Casillero **tablero)
 {
     bool termino = false;
     int turno = 1, numeroJugada = 0;
-    int ficha1 = 1;
-    int ficha2 = 2;
     int ficha =  0;
+
     while (!termino)
     {
 
-        mostrarTablero(tablero);
+        mostrarTablero(tablero, turno);
         if (numeroJugada == 0)
         {
-            ficha = ficha1;
+            ficha = JUGADOR1;
         }
         // moverFicha
         imprimeCoordenadasjugadores(tablero, turno);
         seleccionDeSoldado(tablero, ficha);
+
         if (turno == 1)
         {
             turno = 2;
-            ficha = ficha2;
+            ficha = JUGADOR2;
         }
         else
         {
             turno = 1;
-            ficha = ficha1;
+            ficha = JUGADOR1;
         }
         system("pause");
-        // tablero[filaDestino][colDestino].ficha = tablero[filaOrigen][colOrigen].ficha;
-        // tablero[filaOrigen][colOrigen].ficha = BLANCO;
+        // system("cls");
         numeroJugada++;
     }
 }
@@ -57,33 +54,122 @@ void imprimeCoordenadasjugadores(Casillero **tablero, int turno)
         {
             if (tablero[i][j].ficha == turno)
             {
-                std::cout << i + 1 << ')' << "Ficha: " << tablero[i][j].ficha << " Coordenadas: " << i << " " << j << std::endl;
+                std::cout<< "Ficha: " <<  i + 1 << " Coordenadas: " << i << " " << j << std::endl;
             }
         }
     }
 }
 
-void seleccionDeSoldado(Casillero **tablero, char ficha)
+// void seleccionDeSoldado(Casillero **tablero, int ficha)
+// {
+//     int soldado;
+//     int contadorJugadores = 0;
+//     char respuesta;
+//     std::cout << "Ingrese el numero del soldado que desea mover: ";
+//     std::cin >> soldado;
+
+//     for (int i = 0; i < ALTODELTABLERO; i++){
+//         for (int j = 0; j < ANCHODELTABLERO; j++){
+//             if (tablero[i][j].ficha == ficha){
+//                 contadorJugadores++;
+//                 if (contadorJugadores == soldado){
+//                     std::cout<<"quiere poner una mina? (s/n):";
+//                     std::cin>>respuesta;
+//                     if( respuesta == 's'){
+//                         colocarMina(tablero,i,j,ficha);
+//                     }
+                
+//                 moverFicha(tablero, i, j);
+//                 }
+//             }
+//         }
+//     }
+// }
+void seleccionDeSoldado(Casillero **tablero, int ficha)
 {
     int soldado;
     int contadorJugadores = 0;
+    char respuesta;
     std::cout << "Ingrese el numero del soldado que desea mover: ";
     std::cin >> soldado;
 
-    for (int i = 0; i < ALTODELTABLERO; i++)
-    {
-        for (int j = 0; j < ANCHODELTABLERO; j++)
-        {
-            if (tablero[i][j].ficha == ficha)
-            {
+    int antiguaFila, antiguaColumna; // Nuevas variables para almacenar las coordenadas antiguas
+
+    for (int i = 0; i < ALTODELTABLERO; i++){
+        for (int j = 0; j < ANCHODELTABLERO; j++){
+            if (tablero[i][j].ficha == ficha){
                 contadorJugadores++;
-                if (contadorJugadores == soldado)
-                {
-                    moverFicha(tablero, i, j);
+                if (contadorJugadores == soldado){
+                    std::cout<<"quiere poner una mina? (s/n):";
+                    std::cin>>respuesta;
+                    if( respuesta == 's'){
+                        // Almacenar las coordenadas antiguas antes de llamar a moverFicha()
+                        antiguaFila = i;
+                        antiguaColumna = j;
+                        moverFicha(tablero, i, j);
+                        colocarMina(tablero,antiguaFila,antiguaColumna,ficha);
+                        
+                    }
+                    else{
+                        moverFicha(tablero, i, j);}
+                
                 }
             }
         }
     }
+}
+
+// void activarMinas(Casillero **tablero, int i, int j){
+ 
+//     if (tablero[i][j].ficha == MINA){
+//         tablero[i][j].ficha = BLANCO;
+//         for (int k = i - 1; k <= i + 1; k++){
+//             for (int l = j - 1; l <= j + 1; l++){
+//                 if (k >= 0 && k < ALTODELTABLERO && l >= 0 && l < ANCHODELTABLERO){
+//                     if (tablero[k][l].ficha == JUGADOR1 || tablero[k][l].ficha == JUGADOR2){
+//                         tablero[k][l].ficha = BLANCO;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+// void mostrarMina(Casillero **tablero, int i, int j){
+//     if (tablero[i][j].ficha == MINA){
+//         tablero[i][j].ficha = BLANCO;
+//         for (int k = i - 1; k <= i + 1; k++){
+//             for (int l = j - 1; l <= j + 1; l++){
+//                 if (k >= 0 && k < ALTODELTABLERO && l >= 0 && l < ANCHODELTABLERO){
+//                     if (tablero[k][l].ficha == JUGADOR1 || tablero[k][l].ficha == JUGADOR2){
+//                         tablero[k][l].ficha = BLANCO;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+// Función que coloca una mina en un casillero del tablero
+// void colocarMina( Casillero **tablero , int x, int y, int jugador) {
+//         tablero[x][y].ficha = MINA;
+//         tablero[x][y].activo = true;
+//         tablero[x][y].cantidadDeTurnosActivo = 0;
+//         tablero[x][y].jugadorDeMina = jugador;
+// }
+// void colocarMina(Casillero **tablero, int x, int y, int jugador) {
+//     tablero[x][y].tieneBomba = true; // se asigna true al miembro tieneBomba del casillero donde se colocó la mina
+//     tablero[x][y].ficha = MINA;
+//     tablero[x][y].activo = true;
+//     tablero[x][y].cantidadDeTurnosActivo = 0;
+//     tablero[x][y].jugadorDeMina = jugador;
+// }
+void colocarMina(Casillero **tablero, int x, int y, int jugador) {
+    tablero[x][y].tieneBomba = true;
+    tablero[x][y].ficha = MINA;
+    tablero[x][y].activo = true;
+    tablero[x][y].cantidadDeTurnosActivo = 0;
+    tablero[x][y].jugadorDeMina = jugador;
 }
     // void moverNumeroDeJugador(Casillero **tablero ){
     //     int numeroDeJugador;
@@ -105,11 +191,11 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
     //     }
     // }
 
-    void moverFicha(Casillero * *tablero, int i, int j)
+void moverFicha(Casillero * *tablero, int i, int j)
     {
 
         char direccion;
-        std::cout << "Ingrese la direccion a la que desea mover el soldado: " << std::endl;
+        std::cout << "Ingrese la direccion a la que desea mover el soldado: ";
         std::cin >> direccion;
         int fil = i;
         int col = j;
@@ -117,12 +203,17 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
         switch (direccion)
         {
         case ARRIBA:
-            if (tablero[fil - 1][col].ficha == BLANCO && fil - 1 >= 0)
-            {
+            if (tablero[fil - 1][col].ficha == BLANCO && fil - 1 >= 0){
                 tablero[fil - 1][col].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil - 1;
-                // soldados[soldado].y = col;
+                
+                if(tablero[fil][col].tieneBomba == true){
+                    tablero[fil][col].ficha = MINA;
+                }
+                else{
+                    tablero[fil][col].ficha = BLANCO;
+                }
+
+                
             }
             else
             {
@@ -133,9 +224,18 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil + 1][col].ficha == BLANCO && fil + 1 < ALTODELTABLERO)
             {
                 tablero[fil + 1][col].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil + 1;
-                // soldados[soldado].y = col;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
+                {
+                    /* code */
+                }
+                
             }
             else
             {
@@ -146,9 +246,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil][col + 1].ficha == BLANCO && col + 1 < ANCHODELTABLERO)
             {
                 tablero[fil][col + 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil;
-                // soldados[soldado].y = col + 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {
@@ -159,9 +264,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil][col - 1].ficha == BLANCO && col - 1 >= 0)
             {
                 tablero[fil][col - 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil;
-                // soldados[soldado].y = col - 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {
@@ -172,9 +282,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil - 1][col + 1].ficha == BLANCO && fil - 1 >= 0 && col + 1 < ANCHODELTABLERO)
             {
                 tablero[fil - 1][col + 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil - 1;
-                // soldados[soldado].y = col + 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {
@@ -185,9 +300,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil - 1][col - 1].ficha == BLANCO && fil - 1 >= 0 && col - 1 >= 0)
             {
                 tablero[fil - 1][col - 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil - 1;
-                // soldados[soldado].y = col - 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {
@@ -198,9 +318,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil + 1][col - 1].ficha == BLANCO && fil + 1 < ALTODELTABLERO && col - 1 >= 0)
             {
                 tablero[fil + 1][col - 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil + 1;
-                // soldados[soldado].y = col - 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {
@@ -211,9 +336,14 @@ void seleccionDeSoldado(Casillero **tablero, char ficha)
             if (tablero[fil + 1][col + 1].ficha == BLANCO && fil + 1 < ALTODELTABLERO && col + 1 < ANCHODELTABLERO)
             {
                 tablero[fil + 1][col + 1].ficha = tablero[fil][col].ficha;
-                tablero[fil][col].ficha = BLANCO;
-                // soldados[soldado].x = fil + 1;
-                // soldados[soldado].y = col + 1;
+                if (tablero[fil][col].tieneBomba == true)
+                {
+                    tablero[fil][col].ficha = MINA;
+                }
+                else
+                {
+                    tablero[fil][col].ficha = BLANCO;
+                }
             }
             else
             {

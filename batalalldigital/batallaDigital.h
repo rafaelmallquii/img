@@ -31,8 +31,11 @@ void moverFicha(Casillero **tablero , int i, int j);
 
 void imprimeCoordenadasjugadores(Casillero **tablero, int turno);
 
-void seleccionDeSoldado(Casillero **tablero,char ficha);
+void seleccionDeSoldado(Casillero **tablero,int ficha);
 
+// void mostrasMina(Casillero **tablero);
+
+void colocarMina(Casillero **tablero, int x, int y, int ficha );
 // bool esValidoMover(Casillero **tablero, int filaOrigen, int colOrigen, int filaDestino, int colDestino);
 
 // void guardarPartida(Casillero **tablero, int turno, std::string nombreArchivo);

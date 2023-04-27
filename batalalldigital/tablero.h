@@ -3,8 +3,8 @@
 #ifndef TABLERO_H
 #define TABLERO_H
 
-const int ANCHODELTABLERO = 10;
-const int ALTODELTABLERO = 10;
+const int ANCHODELTABLERO = 20;
+const int ALTODELTABLERO = 20;
 
 enum Ficha {
     BLANCO,
@@ -14,16 +14,24 @@ enum Ficha {
     INACTIVA
 };
 
+struct Soldado {
+    int x;
+    int y;
+    int jugador;
+};
+
 struct Casillero {
     Ficha ficha;
     bool activo;
-	
     int cantidadDeTurnosActivo;
+    int jugadorDeMina;
+    bool tieneBomba;
+    Soldado soldado; // Agregamos el soldado a cada casillero
 };
 
 void crearTablero(Casillero **&tablero);
 void cargarTablero(Casillero **tablero);
-void mostrarTablero(Casillero **tablero);
+void mostrarTablero(Casillero **tablero, int jugador);
 void eliminarTablero(Casillero **tablero);
 
 #endif // TABLERO_H
